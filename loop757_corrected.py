@@ -15,6 +15,14 @@ data = {"Business Name": ["Pretty Strategic, LLC", "DaChef’s Catering & Co.", 
 }
 df = pd.DataFrame(data)
 
+# Load live Google Sheet with refresh cache
+@st.cache_data(ttl=60)  # refresh every 60 seconds
+def load_data():
+    url = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQKkIx5eUS4kACrfiO5_tsWwa0iGBq0GEfNxhdru1hAWWvCb3BxjiqwVeEIlZYEc0PmCUL-wuMDs3ob/pubhtml?gid=0&single=true"
+    return pd.read_csv(url)
+
+df = load_data()
+
 st.set_page_config(page_title='Loop757', layout='centered')
 st.markdown("""<style>body {background: linear-gradient(135deg, #d4fc79 0%, #96e6a1 100%);font-family: 'Arial', sans-serif;} h1 {color: #3b3b3b;} .stTextInput input, .stButton>button {border-radius: 10px;} </style>""", unsafe_allow_html=True)
 st.title('❤️ Loop757: Discover Local Gems')
