@@ -16,14 +16,6 @@ st.subheader("Your Location")
 user_zip = st.text_input("Enter your ZIP code (optional if searching all)", max_chars=10)
 search_all = st.checkbox("Search all ZIP codes", value=True)
 
-# Filter toggles
-st.subheader("Filter Your Preferences")
-black_owned = st.checkbox("Black-owned")
-women_owned = st.checkbox("Women-owned")
-mobile = st.checkbox("Mobile")
-kid_friendly = st.checkbox("Kid-friendly")
-vegan_friendly = st.checkbox("Vegan-friendly")
-
 # Search box
 st.subheader("What are you looking for?")
 query = st.text_input("Type keywords like 'private chef', 'consultant', or 'vegan'")
@@ -47,6 +39,15 @@ if vegan_friendly:
 
 if not search_all and user_zip:
     results = results[results['Zipcode'].astype(str).str.strip() == user_zip.strip()]
+
+
+# Filter toggles
+st.subheader("Filter Your Preferences")
+black_owned = st.checkbox("Black-owned")
+women_owned = st.checkbox("Women-owned")
+mobile = st.checkbox("Mobile")
+kid_friendly = st.checkbox("Kid-friendly")
+vegan_friendly = st.checkbox("Vegan-friendly")
 
 # Display results
 if query or black_owned or women_owned or mobile or kid_friendly or vegan_friendly or (not search_all and user_zip):
