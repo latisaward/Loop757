@@ -41,7 +41,6 @@ navigator.geolocation.getCurrentPosition(
 );
 </script>
 """, height=0)
-
 search_all = st.checkbox("Search all ZIP codes", value=(user_zip.strip() == ""))
 
 # Smart search box FIRST
