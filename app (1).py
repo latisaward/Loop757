@@ -47,8 +47,19 @@ if query or black_owned or women_owned or mobile or kid_friendly or vegan_friend
             st.markdown(f"### {row['Business Name']}")
             st.markdown(f"📂 **{row['Category']} > {row['Subcategory']}**")
             st.markdown(f"📍 ZIP: {row['Zipcode']}")
-            if pd.notna(row['Instagram or Website']) and row['Instagram or Website'].strip() != '':
-                st.markdown(f"🔗 [Visit Website or Instagram]({row['Instagram or Website']})")
+           link = business.get("Instagram or Website", "")
+if link:
+    link = link.strip()
+    if link.startswith("@"):
+        link = "https://www.instagram.com/" + link[1:]
+    elif not link.startswith("http"):
+        link = "https://" + link
+else:
+    link = "#"
+
+# Render the link clearly
+st.markdown(f"[Visit Website or Instagram]({link})", unsafe_allow_html=True)
+
             tags = []
             if row['Black Owned']: tags.append('🖤 Black-Owned')
             if row['Women Owned']: tags.append('👩 Women-Owned')
