@@ -3,7 +3,7 @@ import pandas as pd
 import streamlit.components.v1 as components
 
 # Load live data from Google Sheets
-sheet_url = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQKkIx5eUS4kACrfiO5_tsWwa0iGBq0GEfNxhdru1hAWWvCb3BxjiqwVeEIlZYEc0PmCUL-wuMDs3ob/pub?output=csv"
+sheet_url = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQKkIx5eUS4kACrfiO5_tsWwa0iGBq0GEfNxhdru1hAWWvCb3BxjiqwVeEIlZYEc0PmCUL-wuMDs3ob/pubhtml?gid=0&single=true"
 df = pd.read_csv(sheet_url)
 
 # Clean column names
