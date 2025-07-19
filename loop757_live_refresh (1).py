@@ -1,26 +1,62 @@
-
 import streamlit as st
 import pandas as pd
 import streamlit.components.v1 as components
 
-# Load Google Sheet CSV and auto-refresh every 60 seconds
+# Refresh from Google Sheet
 sheet_url = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQKkIx5eUS4kACrfiO5_tsWwa0iGBq0GEfNxhdru1hAWWvCb3BxjiqwVeEIlZYEc0PmCUL-wuMDs3ob/pub?output=csv"
+df = pd.read_csv(sheet_url)
+df.columns = df.columns.str.strip()  # Strip extra spaces from column names
 
-@st.cache_data(ttl=60)
-def load_data():
-    df = pd.read_csv(sheet_url)
-    df.columns = df.columns.str.strip()
-    return df
+# Format Instagram / Website field into clickable links
+def format_link(value):
+    value = str(value).strip()
+    if value.startswith('@'):
+        return f"https://www.instagram.com/{value[1:]}"
+    elif value.startswith("instagram.com/"):
+        return f"https://{value}"
+    elif value.startswith("http"):
+        return value
+    elif value.startswith("www."):
+        return f"https://{value}"
+    else:
+        return value
 
-df = load_data()
+df["Instagram or Website"] = df["Instagram or Website"].apply(format_link)
 
+# App UI
 st.set_page_config(page_title='Loop757', layout='centered')
-st.markdown("""<style>body {background: linear-gradient(135deg, #d4fc79 0%, #96e6a1 100%);font-family: 'Arial', sans-serif;} h1 {color: #3b3b3b;} .stTextInput input, .stButton>button {border-radius: 10px;} </style>""", unsafe_allow_html=True)
+st.markdown("""
+    <style>
+        body {background: linear-gradient(135deg, #d4fc79 0%, #96e6a1 100%);
+        font-family: 'Arial', sans-serif;}
+        h1 {color: #3b3b3b;}
+        .stTextInput input, .stButton>button {border-radius: 10px;}
+    </style>
+""", unsafe_allow_html=True)
 st.title('❤️ Loop757: Discover Local Gems')
 st.caption('Your guide to the 757’s Black-owned, women-led, mobile, vegan, and family-friendly businesses.')
 
-components.html("""<script>navigator.geolocation.getCurrentPosition(function(pos) {var lat = pos.coords.latitude;var lon = pos.coords.longitude;fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}`).then(res => res.json()).then(data => {const zip = data.address.postcode;const input = window.parent.document.querySelector('input[type=text]');if (zip && input && !input.value) {input.value = zip;const event = new Event('input', { bubbles: true });input.dispatchEvent(event);}});});</script>""", height=0)
+# Auto-ZIP
+components.html("""
+<script>
+navigator.geolocation.getCurrentPosition(function(pos) {
+    var lat = pos.coords.latitude;
+    var lon = pos.coords.longitude;
+    fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}`)
+    .then(res => res.json()).then(data => {
+        const zip = data.address.postcode;
+        const input = window.parent.document.querySelector('input[type=text]');
+        if (zip && input && !input.value) {
+            input.value = zip;
+            const event = new Event('input', { bubbles: true });
+            input.dispatchEvent(event);
+        }
+    });
+});
+</script>
+""", height=0)
 
+# Filters
 user_zip = st.text_input('Enter ZIP code')
 search_all = st.checkbox('Search all ZIP codes', value=(user_zip.strip() == ''))
 st.subheader('🔍 What are you looking for?')
@@ -33,6 +69,7 @@ mobile = st.checkbox('Mobile')
 kid_friendly = st.checkbox('Kid-friendly')
 vegan_friendly = st.checkbox('Vegan-friendly')
 
+# Search Logic
 results = df.copy()
 if query.strip():
     q = query.lower()
@@ -54,6 +91,7 @@ if vegan_friendly:
 if not search_all and user_zip.strip():
     results = results[results['Zipcode'].astype(str).str.contains(user_zip.strip(), case=False)]
 
+# Results
 if query or black_owned or women_owned or mobile or kid_friendly or vegan_friendly or (not search_all and user_zip.strip()):
     st.subheader('📋 Matching Recommendations')
     if not results.empty:
@@ -61,12 +99,8 @@ if query or black_owned or women_owned or mobile or kid_friendly or vegan_friend
             st.markdown(f"### {row['Business Name']}")
             st.markdown(f"📂 **{row['Category']} > {row['Subcategory']}**")
             st.markdown(f"📍 ZIP: {row['Zipcode']}")
-            link = str(row['Instagram or Website']).strip()
+            link = row['Instagram or Website']
             if link:
-                if link.startswith("@"):
-                    link = "https://www.instagram.com/" + link[1:]
-                elif not link.startswith("http"):
-                    link = "https://" + link
                 st.markdown(f"🔗 [Visit Website or Instagram]({link})", unsafe_allow_html=True)
             tags = []
             if row['Black Owned']: tags.append('🖤 Black-Owned')
