@@ -27,7 +27,7 @@ vegan_friendly = st.checkbox('Vegan-friendly')
 results = df.copy()
 if query.strip():
     q = query.lower()
-    results = results[df['Business/Service'].str.lower().str.contains(q, na=False) | df['Category'].str.lower().str.contains(q, na=False) | df['Subcategory'].str.lower().str.contains(q, na=False)]
+    results = results[df['Business/Service Name'].str.lower().str.contains(q, na=False) | df['Category'].str.lower().str.contains(q, na=False) | df['Subcategory'].str.lower().str.contains(q, na=False)]
 if black_owned:
     results = results[results['Black Owned'] == 1]
 if women_owned:
@@ -45,7 +45,7 @@ if query or black_owned or women_owned or mobile or kid_friendly or vegan_friend
     st.subheader('📋 Matching Recommendations')
     if not results.empty:
         for _, row in results.iterrows():
-            st.markdown(f"### {row['Business/Service']}")
+            st.markdown(f"### {row['Business/Service Name']}")
             st.markdown(f"📂 **{row['Category']} > {row['Subcategory']}**")
             st.markdown(f"📍 ZIP: {row['Zipcode']}")
             link = str(row['Instagram or Website']).strip()
