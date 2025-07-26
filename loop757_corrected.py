@@ -44,7 +44,6 @@ for col in ['Black Owned', 'Mobile', 'Kid Friendly', 'Vegan Friendly', 'Women Ow
 
 st.set_page_config(page_title='Loop757', layout='centered')
 st.markdown("""<style>body {background: linear-gradient(135deg, #d4fc79 0%, #96e6a1 100%);font-family: 'Arial', sans-serif;} h1 {color: #3b3b3b;} .stTextInput input, .stButton>button {border-radius: 10px;} </style>""", unsafe_allow_html=True)
-
 else:
         st.warning('No results found. Try a different keyword or filter combination.')
 else:
