@@ -3,7 +3,7 @@ import pandas as pd
 import streamlit.components.v1 as components
 
 csv_url = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQKkIx5eUS4kACrfiO5_tsWwa0iGBq0GEfNxhdru1hAWWvCb3BxjiqwVeEIlZYEc0PmCUL-wuMDs3ob/pub?gid=0&single=true&output=csv"
-st.experimental_set_query_params(refresh=int(pd.Timestamp.now().timestamp()))
+st.query_params(refresh=int(pd.Timestamp.now().timestamp()))
 df = pd.read_csv(csv_url)
 
 # Rename columns to expected names (remove leading/trailing spaces)
